@@ -96,7 +96,7 @@ public class TRCParser{
 		}
 		
 		if(trvCountEmptyLines==trvCountNonEmptyLines || trvTotalParameters!=trvCountParameters){
-			System.out.println("this block"+trvTotalParameters+trvCountParameters);
+			
 			return false;
 		}
 		
@@ -131,8 +131,6 @@ public class TRCParser{
 			}
 			
 			objBufferedReader.close();
-			
-			System.out.println(objHashMap.get("PORT_NO"));
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
