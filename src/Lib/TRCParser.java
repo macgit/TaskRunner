@@ -26,14 +26,7 @@ public class TRCParser{
 	
 		File objFileExists=new File(trvFileName);
 		
-		if(objFileExists.exists()) {
-			
-			return true;
-		}
-		else {
-			
-			return false;
-		}
+		return objFileExists.exists();
 	
 	}
 	
