@@ -13,18 +13,22 @@ import java.util.HashMap;
 
 public class TRCParser{
 	
-	private final String trvFileName="TRFConfig/TR.CONFIG";
+	private final String vFileName="TRFConfig/TR.CONFIG";
+	private final String vKeyValueSeparator=":";
+	private final String vComment="#";
 	
 	HashMap<String,String> objHashMap= new HashMap<String,String>();
+	
+	
 	
 	/*
 	 * This method checks if config File Exists
 	 * @returns boolean
 	 */
 	
-	public boolean trmCheckIfFileExists() {
+	private boolean trmCheckIfFileExists() {
 	
-		File objFileExists=new File(trvFileName);
+		File objFileExists=new File(vFileName);
 		
 		return objFileExists.exists();
 	
@@ -34,50 +38,33 @@ public class TRCParser{
 	
 	/*
 	 * this method checks if the config File has any bad entries
-	 * 
 	 * @returns boolean
 	 * 
 	 */
 	
-	public boolean trmVerifyConfigFile() {
+	private boolean mVerifyConfigFile(String vKeyValueSeparator, String vComment) {
 		
 		int trvCountEmptyLines=0;
 		int trvCountNonEmptyLines=0;
-		int trvCountParameters=0;
-		int trvTotalParameters=2;
+		
+		System.out.println("Verifying Config File "+vFileName);
+		System.out.println("vKey_Value_Separator "+vKeyValueSeparator+" vComment "+vComment);
 		
 		try {
-			BufferedReader objBufferedReader=new BufferedReader(new FileReader(trvFileName));
+			BufferedReader objBufferedReader=new BufferedReader(new FileReader(vFileName));
 			
 			String line=objBufferedReader.readLine();
 			
 			while(line != null) {
-				//System.out.println(line);
 				
 				line=line.trim();
 				
-				if(line.length()==0 || line.startsWith("#") || line.contains(":") && line.split(":").length==2 ){
+				if(line.length()==0 || line.startsWith(vComment) || line.contains(vKeyValueSeparator) && line.split(vKeyValueSeparator).length>=2 ){
 					
 					if(line.length()==0) {
 						trvCountEmptyLines++;
 					}
 					trvCountNonEmptyLines++;
-					
-					if(line.startsWith("PORT_NO")) {
-
-						trvCountParameters++;
-					}
-					else if(line.startsWith("SERVER_NAME")) {
-
-						trvCountParameters++;
-					}
-					else {
-						
-						if(line.length()!=0 && !line.startsWith("#")) {
-
-							trvCountParameters=trvCountParameters+2;
-						}
-					}
 				}
 				else {
 					objBufferedReader.close();
@@ -95,7 +82,7 @@ public class TRCParser{
 			return false;
 		}
 		
-		if(trvCountEmptyLines==trvCountNonEmptyLines || trvTotalParameters!=trvCountParameters){
+		if(trvCountEmptyLines==trvCountNonEmptyLines){
 			
 			return false;
 		}
@@ -104,17 +91,20 @@ public class TRCParser{
 	}
 	
 	
+	
+	
 	/*
 	 * This method reads the Config file and store them in HashMap
+	 * @return boolean
 	 * 
 	 */
 	
 	
-	public boolean trmLoadConfigFile() {
+	private boolean mLoadConfigFile(String vKeyValueSeparator, String vComment) {
 		
 		
 		try {
-			BufferedReader objBufferedReader=new BufferedReader(new FileReader(trvFileName));
+			BufferedReader objBufferedReader=new BufferedReader(new FileReader(vFileName));
 			
 			String line = objBufferedReader.readLine();
 			
@@ -122,9 +112,9 @@ public class TRCParser{
 				
 				line=line.trim();
 				
-				if(line.length()!=0 && !line.startsWith("#")) {
+				if(line.length()!=0 && !line.startsWith(vComment)) {
 					
-					objHashMap.put(line.split(":")[0], line.split(":")[1]);
+					objHashMap.put(line.split(vKeyValueSeparator,2)[0], line.split(vKeyValueSeparator,2)[1]);
 				}
 				
 				line = objBufferedReader.readLine();
@@ -142,11 +132,15 @@ public class TRCParser{
 	}
 	
 	
+	
+	
 	/*
-	 * 
+	 * this method returns key value that are stored in hashmap
+	 * @param String<Key>
+	 * @return String<Value>
 	 */
 	
-public String trmGetConfigValues(String Key) {
+public String mGetConfigValues(String Key) {
 		
 		return objHashMap.get(Key);
 		
@@ -154,6 +148,54 @@ public String trmGetConfigValues(String Key) {
 	
 	
 	
+
+/*
+ * this method verifies and then loads config file
+ * @param - String,String
+ * @returns - boolean
+ * 
+ */
+
+public boolean mVerifyAndLoadConfigFile(String vKeyValueSeparator, String vComment) {
+	
+	vKeyValueSeparator=vKeyValueSeparator.trim().isEmpty()?this.vKeyValueSeparator:vKeyValueSeparator.trim();
+	vComment=vComment.trim().isEmpty()?this.vComment:vComment.trim();
+	
+	if( trmCheckIfFileExists() && mVerifyConfigFile(vKeyValueSeparator,vComment) ){
+		
+		return mLoadConfigFile(vKeyValueSeparator,vComment);
+	}
+	else {
+		
+		return false;
+	}
+}
+
+
+
+/*
+ * overloading method mVerifyAndLoadConfigFile
+ * @returns - boolean
+ * 
+ */
+
+public boolean mVerifyAndLoadConfigFile() {
+	
+	return mVerifyAndLoadConfigFile(this.vKeyValueSeparator,this.vComment);
+}
+
+
+/*
+ * overloading method mVerifyAndLoadConfigFile
+ * @param String<vKeyValueSeparator>
+ * @returns - boolean
+ * 
+ */
+
+public boolean mVerifyAndLoadConfigFile(String vKeyValueSeparator) {
+
+	return mVerifyAndLoadConfigFile(vKeyValueSeparator,this.vComment);
+}
 	
 	
 	

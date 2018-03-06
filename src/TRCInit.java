@@ -12,11 +12,8 @@ public class TRCInit{
 	
 	public void trmConfigFileCheckOnStartup() {
 		
-		System.out.println(objTRCParser.trmCheckIfFileExists());
-		System.out.println(objTRCParser.trmVerifyConfigFile());
-		System.out.println(objTRCParser.trmLoadConfigFile());
-		
-		System.out.println(objTRCParser.trmGetConfigValues("PORT_NO"));
+		System.out.println(objTRCParser.mVerifyAndLoadConfigFile(";"));
+	
 	}
 	
 	
