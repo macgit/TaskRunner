@@ -44,8 +44,8 @@ public class TRCParser{
 	
 	private boolean mVerifyConfigFile(String vKeyValueSeparator, String vComment) {
 		
-		int trvCountEmptyLines=0;
-		int trvCountNonEmptyLines=0;
+		int vCountEmptyLines=0;
+		int vCountNonEmptyLines=0;
 		
 		System.out.println("Verifying Config File "+vFileName);
 		System.out.println("vKey_Value_Separator "+vKeyValueSeparator+" vComment "+vComment);
@@ -62,9 +62,9 @@ public class TRCParser{
 				if(line.length()==0 || line.startsWith(vComment) || line.contains(vKeyValueSeparator) && line.split(vKeyValueSeparator).length>=2 ){
 					
 					if(line.length()==0) {
-						trvCountEmptyLines++;
+						vCountEmptyLines++;
 					}
-					trvCountNonEmptyLines++;
+					vCountNonEmptyLines++;
 				}
 				else {
 					objBufferedReader.close();
@@ -82,7 +82,7 @@ public class TRCParser{
 			return false;
 		}
 		
-		if(trvCountEmptyLines==trvCountNonEmptyLines){
+		if(vCountEmptyLines==vCountNonEmptyLines){
 			
 			return false;
 		}
